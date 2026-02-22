@@ -34,7 +34,6 @@ cd $HERE/..
 # src/bin/open_jtalk.cをビルド
 emcc "$OPEN_JTALK_DIR/src/bin/open_jtalk.c" \
   -O2 \
-  -lnodefs.js \
   "$OPEN_JTALK_DIR/src/build/libopenjtalk.a" \
   "$HTS_ENGINE_API_DIR/src/build/lib/libhts_engine_API.a" \
 	-I $OPEN_JTALK_DIR/src/jpcommon \
@@ -51,7 +50,15 @@ emcc "$OPEN_JTALK_DIR/src/bin/open_jtalk.c" \
 	-I $OPEN_JTALK_DIR/src/text2mecab \
   -I $HTS_ENGINE_API_DIR/lib \
   -I $HTS_ENGINE_API_DIR/include \
-  -o "$JS_DIR/open_jtalk.js" \
+  -o "$JS_DIR/open-jtalk.js" \
   -s ALLOW_MEMORY_GROWTH=1 \
-  -s NODERAWFS=1
+  -s WASM=1 \
+  -s MODULARIZE=1 \
+  -s EXPORT_ES6=1 \
+  -s INVOKE_RUN=0 \
+  -s EXPORTED_RUNTIME_METHODS=['callMain','FS'] \
+  -s ENVIRONMENT=web,worker \
+  --preload-file "./etc/open_jtalk_dic_utf_8-1.11@/etc/open_jtalk_dic_utf_8-1.11" \
+  --preload-file "./etc/mei/mei_normal.htsvoice@/etc/mei/mei_normal.htsvoice"
+  # --emit-tsd="$JS_DIR/open-jtalk.d.ts"
   # --embed-file "etc" \
